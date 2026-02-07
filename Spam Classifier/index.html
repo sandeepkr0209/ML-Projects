@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Email Spam Detector</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.card {
+    background: white;
+    width: 95%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 170px;
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    resize: none;
+    outline: none;
+    transition: 0.2s;
+}
+
+textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 6px rgba(102,126,234,0.3);
+}
+
+.counter {
+    text-align: right;
+    font-size: 12px;
+    color: #777;
+    margin-top: 6px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    background: #667eea;
+    color: white;
+    cursor: pointer;
+    margin-top: 18px;
+    transition: 0.25s;
+}
+
+button:hover {
+    background: #5a67d8;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.result {
+    margin-top: 22px;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.spam {
+    background: #ffe5e5;
+    color: #c0392b;
+}
+
+.ham {
+    background: #e6ffed;
+    color: #27ae60;
+}
+
+.prob {
+    font-size: 14px;
+    margin-top: 6px;
+    font-weight: normal;
+}
+
+.footer {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Email Spam Detector</h2>
+    <div class="subtitle">Paste your message and check if it’s spam</div>
+
+    <form method="post" action="/predict" onsubmit="showLoading()">
+
+        <textarea id="emailBox" name="email_text" required
+        oninput="updateCounter()">{{ text if text else "" }}</textarea>
+
+        <div class="counter">
+            Characters: <span id="count">0</span>
+        </div>
+
+        <button id="predictBtn" type="submit">
+            Predict Message
+        </button>
+
+    </form>
+
+    {% if prediction %}
+        <div class="result {{ 'spam' if prediction == 'Spam' else 'ham' }}">
+            {{ prediction }}
+            <div class="prob">
+                Spam Probability: {{ probability }}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="footer">
+        ML Spam Classifier • Flask Deployment
+    </div>
+
+</div>
+
+<script>
+function updateCounter() {
+    document.getElementById("count").innerText =
+        document.getElementById("emailBox").value.length;
+}
+
+function showLoading() {
+    const btn = document.getElementById("predictBtn");
+    btn.innerText = "Analyzing...";
+    btn.disabled = true;
+}
+
+updateCounter();
+</script>
+
+</body>
+</html>
